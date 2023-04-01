@@ -63,6 +63,52 @@ async function main(){
     });
 
 
+
+
+    app.route("/articles/:articleTitle")
+
+    
+    .get(function(request,response){
+
+        
+        Article.findOne({title:request.params.articleTitle})
+        .then(function(foundArticle){
+            response.send(foundArticle);
+        })
+        .catch(function(err){
+            response.send("not found");
+        });
+
+    })
+    .put(function(request,response){
+        Article.replaceOne({title:request.params.articleTitle},{title:request.body.title,content:request.body.content},{overwrite:true})
+        .then(function(){
+            response.send("successfully saved articles!")
+        })
+        .catch(function(err){
+            response.send(err);
+        });
+    })
+    .patch(function(request,response){
+        Article.updateOne({title:request.params.articleTitle},{$set:request.body})
+        .then(function(){
+            response.send("successfully patched!")
+        })
+        .catch(function(err){
+            response.send(err);
+        });
+    })
+    .delete(function(request,response){
+        Article.deleteOne({ title:request.params.articleTitle })
+        .then(function(){
+            response.send("successfully deleted the corresponding article!")
+        })
+        .catch(function(err){
+            response.send(err);
+        });
+    });
+
+
 }
 
 app.listen(3000,function(){
